@@ -1,0 +1,110 @@
+﻿@page "/armala"
+@using PizzaBlazor.Client.Shared.Models;
+
+<h3>Armala tu mismo</h3>
+
+<div class="row">
+    <div class="col-6">
+        @if (tamanos != null)
+        {
+            <select class="form-select" aria-label="Default select example" @onchange="TamanoFunc">
+                <option selected disabled>Selecciona el tamaño</option>
+                @foreach (var item in tamanos)
+                {
+                    <option value=@item.Id>@item.Tamano</option>
+                }
+            </select>
+        }
+        @if (tamanoSeleccionado.Id > 0)
+        {
+             @if (tiposMasa != null)
+            {
+                <select class="form-select" aria-label="Default select example" @onchange="Tipomasafunc">
+                    <option selected disabled>Selecciona el tipo de masa</option>
+                    @foreach (var item in tiposMasa)
+                    {
+                        <option value=@item.Id>@item.Tipo</option>
+                    }
+                </select>
+            }
+        }
+        @if (tipoSeleccionado.Id > 0)
+        {
+            @foreach(var item in tipoIngrediente)
+            {
+                <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    @item.Nombre
+                    </label>
+            </div>
+            }
+            
+        }
+
+
+        
+    </div>
+    <div class="col-6">
+        @tamanoSeleccionado.Tamano
+        @tamanoSeleccionado.Precio
+        <br />
+        @tipoSeleccionado.Tipo
+        @tipoSeleccionado.Precio
+        <br />
+
+    </div>
+</div>
+
+
+
+@code {
+    List<Tamanos> tamanos = new List<Tamanos>();
+    List<TipoMasa> tiposMasa = new List<TipoMasa>();
+    List<Ingrediente> tipoIngrediente = new List<Ingrediente>();
+    Tamanos tamanoSeleccionado = new Tamanos();
+    TipoMasa tipoSeleccionado = new TipoMasa();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tamanos = new List<Tamanos>()
+        {
+            new Tamanos{Id=1,Tamano="Personal",Precio=10.0f},
+            new Tamanos{Id=2,Tamano="Chica",Precio=20.0f},
+            new Tamanos{Id=3,Tamano="Mediana",Precio=30.0f},
+            new Tamanos{Id=4,Tamano="Grande",Precio=40.0f},
+        };
+
+        tiposMasa = new List<TipoMasa>()
+        {
+            new TipoMasa{Id=1,Tipo="Tradicional",Precio=30.0f},
+            new TipoMasa{Id=2,Tipo="Crunch",Precio=25.0f},
+            new TipoMasa{Id=3,Tipo="Orilla de Queso",Precio=35.0f},
+            new TipoMasa{Id=4,Tipo="Sartén",Precio=45.0f},
+        };
+
+        tipoIngrediente = new List<Ingrediente>()
+        {
+            new Ingrediente{Id=1,Nombre="Peperonni",Precio=30.0f},
+            new Ingrediente{Id=2,Nombre="Jamon",Precio=25.0f},
+            new Ingrediente{Id=3,Nombre="Piña",Precio=35.0f},
+            new Ingrediente{Id=4,Nombre="Champiñones",Precio=45.0f},
+        };
+    }
+    private void TamanoFunc(ChangeEventArgs args)
+    {
+        var prueba = args;
+        string id = prueba.Value.ToString();
+        int idint = int.Parse(id);
+
+        tamanoSeleccionado = tamanos.Where(tamano => tamano.Id == idint).FirstOrDefault();
+    }
+    private void Tipomasafunc(ChangeEventArgs args)
+    {
+        var prueba = args;
+        string id = prueba.Value.ToString();
+        int idint = int.Parse(id);
+
+        tipoSeleccionado = tiposMasa.Where(tiposMasa => tiposMasa.Id == idint).FirstOrDefault();
+    }
+}
