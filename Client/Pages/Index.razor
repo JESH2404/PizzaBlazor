@@ -1,9 +1,40 @@
 ﻿@page "/"
+@using PizzaBlazor.Client.Shared.Models;
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Inicio</PageTitle>
 
-<h1>Hello, world!</h1>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
 
-Welcome to your new app.
+    body {
+        background-color: #BFDFF5;
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+        background-image: url('Pizza-PNG-Photo-Image.png'); 
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        color: #ffffff; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .container {
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div>
+        <h1 class="display-3">BIENVENIDO A LA PIZZERIA LSIA</h1>
+        <p class="lead">EXPLORA NUESTRO MENÚ PARA HACER TU ORDEN</p>
+        <a class="btn btn-primary btn-lg" href="/armala" role="button">Explorar el Menú</a>
+    </div>
+</div>

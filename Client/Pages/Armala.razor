@@ -1,58 +1,70 @@
 ﻿@page "/armala"
 @using PizzaBlazor.Client.Shared.Models;
+<style>
+    body {
+        background-color: #BFDFF5;}
+</style>
+<h3 class="mt-4">Arma tu propia pizza</h3>
 
-<h3>Armala tu mismo</h3>
+<div class="row mt-4">
 
-<div class="row">
-    <div class="col-6">
+    <div class="col-lg-6">
         @if (tamanos != null)
         {
-            <select class="form-select" aria-label="Default select example" @onchange="TamanoFunc">
-                <option selected disabled>Selecciona el tamaño</option>
-                @foreach (var item in tamanos)
-                {
-                    <option value=@item.Id>@item.Tamano</option>
-                }
-            </select>
+            <div class="mb-3">
+                <label for="tamanoSelect" class="form-label">Selecciona el tamaño</label>
+                <select class="form-select" id="tamanoSelect" @onchange="TamanoFunc">
+                    <option selected disabled>Selecciona el tamaño</option>
+                    @foreach (var item in tamanos)
+                    {
+                        <option value=@item.Id>@item.Tamano</option>
+                    }
+                </select>
+            </div>
         }
         @if (tamanoSeleccionado.Id > 0)
         {
-             @if (tiposMasa != null)
-            {
-                <select class="form-select" aria-label="Default select example" @onchange="Tipomasafunc">
+            <div class="mb-3">
+                <label for="masaSelect" class="form-label">Selecciona el tipo de masa</label>
+                <select class="form-select" id="masaSelect" @onchange="Tipomasafunc">
                     <option selected disabled>Selecciona el tipo de masa</option>
                     @foreach (var item in tiposMasa)
                     {
                         <option value=@item.Id>@item.Tipo</option>
                     }
                 </select>
-            }
+            </div>
         }
         @if (tipoSeleccionado.Id > 0)
         {
-            @foreach(var item in tipoIngrediente)
-            {
-                <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    @item.Nombre
-                    </label>
+            <div class="mb-3">
+                <h5>Selecciona ingredientes:</h5>
+                @foreach (var item in tipoIngrediente)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault-@item.Id" @onchange="eventArg => {IngSel(item,eventArg);}">
+                        <label class="form-check-label" for="flexCheckDefault-@item.Id">
+                            @item.Nombre
+                        </label>
+                    </div>
+                }
             </div>
-            }
-            
         }
-
-
-        
     </div>
-    <div class="col-6">
-        @tamanoSeleccionado.Tamano
-        @tamanoSeleccionado.Precio
-        <br />
-        @tipoSeleccionado.Tipo
-        @tipoSeleccionado.Precio
-        <br />
-
+    <div class="col-lg-6">
+        <h4>Resumen:</h4>
+        <p><strong>Tamaño:</strong> @tamanoSeleccionado.Tamano</p>
+        <p><strong>Precio Tamaño:</strong> $@tamanoSeleccionado.Precio</p>
+        <p><strong>Tipo de Masa:</strong> @tipoSeleccionado.Tipo</p>
+        <p><strong>Precio Masa:</strong> $@tipoSeleccionado.Precio</p>
+        <p><strong>Ingredientes seleccionados:</strong></p>
+        <ul>
+            @foreach (var item in ingredientesSel)
+            {
+                <li>@item.Nombre ($@item.Precio)</li>
+            }
+        </ul>
+        <p class="mt-4"><strong>TOTAL: $@costototal</strong></p>
     </div>
 </div>
 
@@ -62,8 +74,11 @@
     List<Tamanos> tamanos = new List<Tamanos>();
     List<TipoMasa> tiposMasa = new List<TipoMasa>();
     List<Ingrediente> tipoIngrediente = new List<Ingrediente>();
+    List<Ingrediente> ingredientesSel = new List<Ingrediente>();
     Tamanos tamanoSeleccionado = new Tamanos();
     TipoMasa tipoSeleccionado = new TipoMasa();
+    float costoIngredientes = 0.0f;
+    float costototal = 0.0f;
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,6 +113,8 @@
         int idint = int.Parse(id);
 
         tamanoSeleccionado = tamanos.Where(tamano => tamano.Id == idint).FirstOrDefault();
+        costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
+
     }
     private void Tipomasafunc(ChangeEventArgs args)
     {
@@ -106,5 +123,24 @@
         int idint = int.Parse(id);
 
         tipoSeleccionado = tiposMasa.Where(tiposMasa => tiposMasa.Id == idint).FirstOrDefault();
+        costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
+
     }
+    private void IngSel(Ingrediente ingrediente, ChangeEventArgs args)
+    {
+        bool prueba = bool.Parse(args.Value.ToString());
+        if (prueba)
+        {
+            ingredientesSel.Add(ingrediente);
+        }
+        else
+        {
+            ingredientesSel.Remove(ingrediente);
+        }
+        foreach(var item in ingredientesSel){
+            costoIngredientes += item.Precio;
+        }
+        costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
+    }
+    
 }
