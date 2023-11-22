@@ -77,6 +77,14 @@ namespace PizzaBlazor.Server.Controllers
 
             return sizes;
         }
+        
+        [HttpGet("bebida")]
+        public async Task<List<TipoMasa>> Bebidas()
+        {
+            var Bebidas = await context.TipoMasas.ToListAsync();
+
+            return Bebidas;
+        }
         [HttpPost("nvoingrediente")]
         public async Task<int> NuevoIngrediente(Ingrediente nvoIngrediente)
         {

@@ -1,10 +1,12 @@
 ﻿@page "/logout"
 @using PizzaBlazor.Client.Auth;
 @inject ILoginService loginService
+@inject NavigationManager navManager
 
 @code{
     protected override async Task OnInitializedAsync()
     {
         await loginService.Logout();
+        navManager.NavigateTo("/");
     }
 }

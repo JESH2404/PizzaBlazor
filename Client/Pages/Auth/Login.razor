@@ -1,9 +1,10 @@
-﻿@page "/Login"
+﻿@page "/login"
 @using PizzaBlazor.Client.Auth;
 @using PizzaBlazor.Shared.Models;
 @using System.Text.Json;
 @inject HttpClient client
 @inject ILoginService loginService
+@inject NavigationManager navManager
 
 <h3>Login</h3>
 
@@ -26,7 +27,7 @@
     <div class="mb-3">
         <label>Password:</label>
         <div>
-            <InputText class="form-control" @bind-Value="userInfo.Password" />
+            <InputText class="form-control" type="password" @bind-Value="userInfo.Password" />
             <ValidationMessage For="@(() => userInfo.Password)" />
         </div>
     </div>
@@ -44,6 +45,7 @@
         {
             userToken = await response.Content.ReadFromJsonAsync<UserToken>();
             await loginService.Login(userToken.Token);
+            navManager.NavigateTo("/armala");
         }
     }
 }

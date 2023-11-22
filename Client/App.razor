@@ -1,7 +1,14 @@
-﻿﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <Authorizing>
+                <p>Autorizando... </p>
+            </Authorizing>
+            <NotAuthorized>
+                <PizzaBlazor.Client.Pages.Auth.RedirectLogin/>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+        <FocusOnNavigate Selector="h1" />
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>

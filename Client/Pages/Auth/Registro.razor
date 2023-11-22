@@ -3,6 +3,7 @@
 @using PizzaBlazor.Shared.Models;
 @inject HttpClient client
 @inject ILoginService loginService
+@inject NavigationManager navManager
 
 <h3>Registro</h3>
 
@@ -43,6 +44,7 @@
         {
             userToken = await response.Content.ReadFromJsonAsync<UserToken>();
             await loginService.Login(userToken.Token);
+            navManager.NavigateTo("/Armala");
         }   
     }
 }

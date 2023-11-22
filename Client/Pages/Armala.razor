@@ -126,7 +126,7 @@
     protected override async Task OnInitializedAsync()
     {
         tamanos = await client.GetFromJsonAsync<List<Tamanos>>("api/Catalogos/size");
-        tiposMasa = await client.GetFromJsonAsync<List<TipoMasa>>("api/Catalogos/tipomasa");
+        tiposMasa = await client.GetFromJsonAsync<List<TipoMasa>>("api/Catalogos/bebida");
         tipoIngrediente = await client.GetFromJsonAsync<List<Ingrediente>>("api/Catalogos/ingredientes");
     }
     @code {
