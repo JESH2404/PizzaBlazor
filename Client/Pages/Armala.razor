@@ -1,71 +1,113 @@
-﻿@page "/armala"
-@using PizzaBlazor.Client.Shared.Models;
+﻿@page "/CrearOrden"
+@using PizzaBlazor.Shared.Models;
 @inject HttpClient client
 <style>
     body {
-        background-color: #BFDFF5;}
+        background-color: #B88367;
+        background-image: url('cafe-librerías.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
 </style>
-<h3 class="mt-4">Arma tu propia pizza</h3>
 
-<div class="row mt-4">
+<h3 class="mt-4">CREA TU ORDEN</h3>
 
-    <div class="col-lg-6">
-        @if (tamanos != null)
-        {
-            <div class="mb-3">
-                <label for="tamanoSelect" class="form-label">Selecciona el tamaño</label>
-                <select class="form-select" id="tamanoSelect" @onchange="TamanoFunc">
-                    <option selected disabled>Selecciona el tamaño</option>
-                    @foreach (var item in tamanos)
-                    {
-                        <option value=@item.Id>@item.Tamano</option>
-                    }
-                </select>
-            </div>
-        }
-        @if (tamanoSeleccionado.Id > 0)
-        {
-            <div class="mb-3">
-                <label for="masaSelect" class="form-label">Selecciona el tipo de masa</label>
-                <select class="form-select" id="masaSelect" @onchange="Tipomasafunc">
-                    <option selected disabled>Selecciona el tipo de masa</option>
-                    @foreach (var item in tiposMasa)
-                    {
-                        <option value=@item.Id>@item.Tipo</option>
-                    }
-                </select>
-            </div>
-        }
-        @if (tipoSeleccionado.Id > 0)
-        {
-            <div class="mb-3">
-                <h5>Selecciona ingredientes:</h5>
-                @foreach (var item in tipoIngrediente)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="flexCheckDefault-@item.Id" @onchange="eventArg => {IngSel(item,eventArg);}">
-                        <label class="form-check-label" for="flexCheckDefault-@item.Id">
-                            @item.Nombre
-                        </label>
-                    </div>
-                }
-            </div>
-        }
-    </div>
-    <div class="col-lg-6">
-        <h4>Resumen:</h4>
-        <p><strong>Tamaño:</strong> @tamanoSeleccionado.Tamano</p>
-        <p><strong>Precio Tamaño:</strong> $@tamanoSeleccionado.Precio</p>
-        <p><strong>Tipo de Masa:</strong> @tipoSeleccionado.Tipo</p>
-        <p><strong>Precio Masa:</strong> $@tipoSeleccionado.Precio</p>
-        <p><strong>Ingredientes seleccionados:</strong></p>
-        <ul>
-            @foreach (var item in ingredientesSel)
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-lg-6" style="background-color: rgba(255, 255, 255, 0.7); padding: 20px;">
+            @if (tamanos != null)
             {
-                <li>@item.Nombre ($@item.Precio)</li>
+                <div class="mb-3">
+                    <label for="tamanoSelect" class="form-label" style="color: #7C5D48;">
+                        Selecciona el tamaño
+                    </label>
+                    <select class="form-select" id="tamanoSelect" @onchange="TamanoFunc" style="background-color: #BFDFF5; color: #7C5D48;">
+                        <option selected disabled>Selecciona el tamaño</option>
+                        @foreach (var item in tamanos)
+                        {
+                            <option value=@item.Id>@item.Tamano</option>
+                        }
+                    </select>
+                </div>
             }
-        </ul>
-        <p class="mt-4"><strong>TOTAL: $@costototal</strong></p>
+
+            @if (tamanoSeleccionado.Id > 0)
+            {
+                <div class="mb-3">
+                    <label for="masaSelect" class="form-label" style="color: #7C5D48;">
+                        Selecciona la bebida
+                    </label>
+                    <select class="form-select" id="masaSelect" @onchange="Tipomasafunc" style="background-color: #BFDFF5; color: #7C5D48;">
+                        <option selected disabled>Selecciona la bebida</option>
+                        @foreach (var item in tiposMasa)
+                        {
+                            <option value=@item.Id>@item.Tipo</option>
+                        }
+                    </select>
+                </div>
+            }
+            @if (tipoSeleccionado.Id > 0 && !mostrarExtras)
+            {
+                <div class="mb-3">
+                    <h5>¿Deseas agregar extras?</h5>
+                    <button class="btn btn-primary" @onclick="() => ConfirmarAgregarExtras(true)">Sí</button>
+                    <button class="btn btn-danger" @onclick="() => ConfirmarAgregarExtras(false)">No</button>
+                </div>
+            }
+
+            @if (tipoSeleccionado.Id > 0 && mostrarExtras)
+            {
+                <div class="mb-3">
+                    <h5>Selecciona extras:</h5>
+                    @foreach (var item in tipoIngrediente)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault-@item.Id" @onchange="eventArg => {IngSel(item,eventArg);}">
+                            <label class="form-check-label" for="flexCheckDefault-@item.Id">
+                                @item.Nombre
+                            </label>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (graciasPorCompra)
+            {
+                <p>Gracias por visitarnos. Favor de checar su ticket.</p>
+            }
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-dark">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title">Ticket</h5>
+                </div>
+
+                <div class="card-body">
+                    <p><strong>Tamaño:</strong> @tamanoSeleccionado.Tamano</p>
+                    <p><strong>Precio Tamaño:</strong> $@tamanoSeleccionado.Precio</p>
+                    <p><strong>Bebida Seleccionada:</strong> @tipoSeleccionado.Tipo</p>
+                    <p><strong>Precio extra (Bebida):</strong> $@tipoSeleccionado.Precio</p>
+                    <p><strong>Extras:</strong></p>
+                    <ul>
+                        @foreach (var item in ingredientesSel)
+                        {
+                            <li>@item.Nombre ($@item.Precio)</li>
+                        }
+                    </ul>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <div class="card bg-success">
+                            <div class="card-body text-center">
+                                <strong>Total</strong>
+                                <h5 class="card-title" id="total">$@costototal</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -83,48 +125,79 @@
     Ingrediente nvoIngrediente = new Ingrediente();
     protected override async Task OnInitializedAsync()
     {
-        tamanos = await client.GetFromJsonAsync<List<Tamanos>>("api/Catalogos/tamanos");
+        tamanos = await client.GetFromJsonAsync<List<Tamanos>>("api/Catalogos/size");
         tiposMasa = await client.GetFromJsonAsync<List<TipoMasa>>("api/Catalogos/tipomasa");
         tipoIngrediente = await client.GetFromJsonAsync<List<Ingrediente>>("api/Catalogos/ingredientes");
-
-       
-        
     }
-    private void TamanoFunc(ChangeEventArgs args)
-    {
-        var prueba = args;
-        string id = prueba.Value.ToString();
-        int idint = int.Parse(id);
+    @code {
 
-        tamanoSeleccionado = tamanos.Where(tamano => tamano.Id == idint).FirstOrDefault();
-        costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
 
-    }
-    private void Tipomasafunc(ChangeEventArgs args)
-    {
-        var prueba = args;
-        string id = prueba.Value.ToString();
-        int idint = int.Parse(id);
-
-        tipoSeleccionado = tiposMasa.Where(tiposMasa => tiposMasa.Id == idint).FirstOrDefault();
-        costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
-
-    }
-    private void IngSel(Ingrediente ingrediente, ChangeEventArgs args)
-    {
-        bool prueba = bool.Parse(args.Value.ToString());
-        if (prueba)
+        private void RecalcularCostoTotal()
         {
-            ingredientesSel.Add(ingrediente);
+            float costoIngredientes = 0.0f;
+
+            foreach (var item in ingredientesSel)
+            {
+                costoIngredientes += item.Precio;
+            }
+
+            costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
+        }
+
+        private void TamanoFunc(ChangeEventArgs args)
+        {
+            var id = int.Parse(args.Value.ToString());
+            tamanoSeleccionado = tamanos.FirstOrDefault(t => t.Id == id);
+            RecalcularCostoTotal();
+        }
+
+        private void Tipomasafunc(ChangeEventArgs args)
+        {
+            var id = int.Parse(args.Value.ToString());
+            tipoSeleccionado = tiposMasa.FirstOrDefault(tm => tm.Id == id);
+            RecalcularCostoTotal();
+        }
+
+        private void IngSel(Ingrediente ingrediente, ChangeEventArgs args)
+        {
+            bool seleccionado = bool.Parse(args.Value.ToString());
+
+            if (seleccionado)
+            {
+                ingredientesSel.Add(ingrediente);
+            }
+            else
+            {
+                ingredientesSel.Remove(ingrediente);
+            }
+
+            RecalcularCostoTotal();
+        }
+    }
+}
+
+@code {
+    bool mostrarExtras = false;
+    bool graciasPorCompra = false;
+
+    void ConfirmarAgregarExtras(bool respuesta)
+    {
+        mostrarExtras = respuesta;
+
+        // Si la respuesta es "No", ocultar la pregunta y los botones
+        if (!respuesta)
+        {
+            mostrarExtras = false;
+            graciasPorCompra = true; // Muestra el mensaje de agradecimiento
         }
         else
         {
-            ingredientesSel.Remove(ingrediente);
+            graciasPorCompra = false; // Oculta el mensaje de agradecimiento si la respuesta es "Sí"
         }
-        foreach(var item in ingredientesSel){
-            costoIngredientes += item.Precio;
-        }
-        costototal = tamanoSeleccionado.Precio + tipoSeleccionado.Precio + costoIngredientes;
     }
-    
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PizzaBlazor.Client.Shared.Models;
+using PizzaBlazor.Shared.Models;
 
 namespace PizzaBlazor.Server.Data
 {

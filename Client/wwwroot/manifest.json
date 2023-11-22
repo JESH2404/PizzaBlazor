@@ -1,6 +1,6 @@
 {
-  "name": "PizzaBlazor",
-  "short_name": "PizzaBlazor",
+  "name": "Coffee Shop",
+  "short_name": "Coffee Shop",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
