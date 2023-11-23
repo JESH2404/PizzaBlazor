@@ -5,33 +5,83 @@
 @inject ILoginService loginService
 @inject NavigationManager navManager
 
-<h3>Registro</h3>
+<div class="registration-container">
+    <img src="1683892785-granos-de-cafe.png" alt="Granitos de café" class="background-image" />
 
-<EditForm Model="userInfo" OnValidSubmit="CrearUsuario">
-    <DataAnnotationsValidator/>
-    <div class="mb-3">
-        <label>Usuario:</label>
-        <div>
-            <InputText class="form-control" @bind-Value="userInfo.UserName" />
-            <ValidationMessage For="@(() => userInfo.UserName)" />
+    <h3 class="registration-title">Registro</h3>
+
+    <EditForm Model="userInfo" OnValidSubmit="CrearUsuario">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label class="form-label">Usuario:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="userInfo.UserName" />
+                <ValidationMessage For="@(() => userInfo.UserName)" />
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <label>Email:</label>
-        <div>
-            <InputText class="form-control" @bind-Value="userInfo.Email"/>
-            <ValidationMessage For="@(() => userInfo.Email)"/>
+        <div class="mb-3">
+            <label class="form-label">Email:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="userInfo.Email" />
+                <ValidationMessage For="@(() => userInfo.Email)" />
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <label>Password:</label>
-        <div>
-            <InputText class="form-control" @bind-Value="userInfo.Password"/>
-            <ValidationMessage For="@(() => userInfo.Password)" />
+        <div class="mb-3">
+            <label class="form-label">Password:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="userInfo.Password" />
+                <ValidationMessage For="@(() => userInfo.Password)" />
+            </div>
         </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Registrar</button>
-</EditForm>
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <div class="mt-4">
+            <p>Cerrar Sesión <a href="/Logout">Salir</a></p>
+        </div>
+    </EditForm>
+</div>
+
+<style>
+    .registration-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background: url('1683892785-granos-de-cafe.png') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+    }
+
+    .background-image {
+        display: none; /* Ocultar la imagen cuando no sea necesaria */
+    }
+
+    .registration-title {
+        font-size: 2em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .form-label {
+        color: white;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+    }
+</style>
 
 @code {
     private UserInfo userInfo = new UserInfo();
@@ -40,11 +90,11 @@
     private async Task CrearUsuario()
     {
         var response = await client.PostAsJsonAsync("api/Cuentas/SignUp", userInfo);
-        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
             userToken = await response.Content.ReadFromJsonAsync<UserToken>();
             await loginService.Login(userToken.Token);
-            navManager.NavigateTo("/Armala");
-        }   
+            navManager.NavigateTo("/CrearOrden");
+        }
     }
 }
