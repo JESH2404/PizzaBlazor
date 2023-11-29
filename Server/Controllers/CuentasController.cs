@@ -64,10 +64,6 @@ namespace PizzaBlazor.Server.Controllers
             {
                 new Claim(ClaimTypes.Name, userInfo.UserName),
                 new Claim(ClaimTypes.Email, userInfo.Email),
-                new Claim("ColorFavorito", "Verde"),
-                new Claim("Password", userInfo.Password), // Esto es solo para demostrar que se puede agregar cualquier claim, pero no agreguen datos sensibles
-            //Ojo, no se debe agregar información sensible en los claims, ya que estos se pueden decodificar facilmente
-            //Esto es meramente educativo
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwtkey"]!));
